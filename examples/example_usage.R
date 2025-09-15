@@ -1,5 +1,5 @@
 # Example Usage of PvlTimeSeriesSegmentation Package
-# 
+#
 # This script demonstrates the complete workflow for analyzing viral load
 # time series data using the PvlTimeSeriesSegmentation package with improved
 # regime-based sample data generation.
@@ -15,8 +15,11 @@ source('../R/plot_segmentation.R')
 cat("=== Example 1: Two-State Viral Load System ===\n")
 
 # Generate sample data with realistic two-state regime pattern
-sample_data1 <- generate_sample_data(12, start_date = "2020-01-01", pattern = "two_state",
-                                   regime_duration_months = 4, noise_level = 0.03)
+sample_data1 <- generate_sample_data(12,
+                                     start_date = "2020-01-01",
+                                     pattern = "three_state",
+                                   regime_duration_months = 4,
+                                   noise_level = 0.03)
 cat("Generated two-state pattern with high viremia -> viral suppression\n")
 print(sample_data1)
 
@@ -27,11 +30,11 @@ cat("Interpolated to", nrow(interpolated1), "points\n")
 # Analyze slope characteristics to verify regime structure
 slope_abs <- abs(interpolated1$slope)
 stable_points <- sum(slope_abs < 50, na.rm = TRUE)
-cat("Stable points (|slope| < 50):", stable_points, "out of", nrow(interpolated1), 
+cat("Stable points (|slope| < 50):", stable_points, "out of", nrow(interpolated1),
     paste0("(", round(100 * stable_points / nrow(interpolated1)), "%)\n"))
 
 # Perform segmentation with parameters optimized for regime detection
-segmentation1 <- segment_time_series(interpolated1, 
+segmentation1 <- segment_time_series(interpolated1,
                                    density_threshold = 0.05,  # Lower threshold for regime detection
                                    min_basin_size = 2,         # Allow smaller basins
                                    variance_threshold = 0.3)   # Optimized for regime transitions
@@ -140,7 +143,7 @@ density_thresholds <- c(0.02, 0.05, 0.1, 0.15, 0.2)
 for (thresh in density_thresholds) {
   seg_test <- segment_time_series(interpolated1, density_threshold = thresh, min_basin_size = 2)
   cls_test <- classify_states(seg_test)
-  cat("Density threshold", thresh, ": ", cls_test$summary$num_basins, "regimes,", 
+  cat("Density threshold", thresh, ": ", cls_test$summary$num_basins, "regimes,",
       cls_test$summary$num_bridges, "transitions\n")
 }
 
@@ -149,14 +152,14 @@ basin_sizes <- c(1, 2, 3, 5)
 for (size in basin_sizes) {
   seg_test <- segment_time_series(interpolated1, density_threshold = 0.05, min_basin_size = size)
   cls_test <- classify_states(seg_test)
-  cat("Min basin size", size, ": ", cls_test$summary$num_basins, "regimes,", 
+  cat("Min basin size", size, ": ", cls_test$summary$num_basins, "regimes,",
       cls_test$summary$num_bridges, "transitions\n")
 }
 
 cat("\nAdvanced regime analysis complete!\n")
 cat("Key improvements in new sample data:\n")
 cat("- Realistic quasi-stable viral load regimes with near-zero slopes\n")
-cat("- Biologically plausible transitions between regimes\n") 
+cat("- Biologically plausible transitions between regimes\n")
 cat("- Better basin/bridge detection by segmentation algorithm\n")
 cat("- Support for clinically relevant patterns (treatment response, failure, adherence issues)\n")
 cat("\nGenerated files:\n")
