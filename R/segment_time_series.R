@@ -4,9 +4,9 @@
 #' in 2D (value, slope) feature space using kernel density estimation.
 #'
 #' @param interpolated_data Data frame from interpolate_viral_load with value and slope columns
-#' @param density_threshold Threshold for distinguishing basins from bridges (default: 0.1)
-#' @param min_basin_size Minimum number of consecutive points to form a basin (default: 5)
-#' @param variance_threshold Threshold for bridge variance heuristic (default: 0.5)
+#' @param density_threshold Threshold for distinguishing basins from bridges (default: 0.05, optimized for regime detection)
+#' @param min_basin_size Minimum number of consecutive points to form a basin (default: 2, optimized for regime detection)
+#' @param variance_threshold Threshold for bridge variance heuristic (default: 0.3, optimized for regime transitions)
 #' @return A list containing density estimates, basin/bridge classifications, and summary statistics
 #' @export
 #' @examples
@@ -16,8 +16,8 @@
 #' sample_data <- data.frame(date = dates, result = values)
 #' interpolated <- interpolate_viral_load(sample_data)
 #' segmentation <- segment_time_series(interpolated)
-segment_time_series <- function(interpolated_data, density_threshold = 0.1, 
-                               min_basin_size = 5, variance_threshold = 0.5) {
+segment_time_series <- function(interpolated_data, density_threshold = 0.05, 
+                               min_basin_size = 2, variance_threshold = 0.3) {
   
   if (!all(c("value", "slope") %in% names(interpolated_data))) {
     stop("Data must contain 'value' and 'slope' columns")
