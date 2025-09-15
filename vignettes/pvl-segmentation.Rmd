@@ -1,0 +1,95 @@
+---
+title: "Viral Load Time Series Segmentation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Viral Load Time Series Segmentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+The `PvlTimeSeriesSegmentation` package provides tools for analyzing viral load time series data by identifying basins (stable states) and bridges (transitions) using kernel density estimation in 2D feature space.
+
+## Basic Usage
+
+```{r setup, eval=FALSE}
+library(PvlTimeSeriesSegmentation)
+```
+
+### Generate Sample Data
+
+```{r sample-data, eval=FALSE}
+# Generate sample viral load data with decline-rebound pattern
+sample_data <- generate_sample_data(12, pattern = "decline_rebound")
+head(sample_data)
+```
+
+### Interpolate to Feature Space
+
+```{r interpolate, eval=FALSE}
+# Convert to (value, slope) feature space
+interpolated <- interpolate_viral_load(sample_data, n_points = 30)
+head(interpolated)
+```
+
+### Segment Time Series
+
+```{r segment, eval=FALSE}
+# Identify basins and bridges using KDE
+segmentation <- segment_time_series(interpolated)
+
+# View summary
+segmentation$summary
+```
+
+### Classify States
+
+```{r classify, eval=FALSE}
+# Add descriptive state labels
+classified <- classify_states(segmentation)
+
+# View state distribution
+table(classified$data$state_label)
+```
+
+### Visualize Results
+
+```{r plot, eval=FALSE}
+# Create trajectory plot in (value, slope) space
+plot_segmentation(classified, plot_type = "trajectory")
+
+# Create time series plot with segmentation
+plot_segmentation(classified, plot_type = "time_series")
+
+# Create density contour plot
+plot_segmentation(classified, plot_type = "density")
+```
+
+## Algorithm Details
+
+1. **Feature Extraction**: Time series data is interpolated and slopes are calculated
+2. **Kernel Density Estimation**: 2D KDE identifies density patterns in (value, slope) space
+3. **Basin/Bridge Classification**: High-density regions become basins, low-density paths become bridges
+4. **Variance Heuristics**: Additional variance-based criteria refine bridge identification
+5. **Temporal Constraints**: Minimum basin sizes ensure temporal stability
+
+## Parameters
+
+- `density_threshold`: Separates basins (above) from bridges (below)
+- `min_basin_size`: Minimum consecutive points for a valid basin
+- `variance_threshold`: Variance-based criterion for bridge identification
+
+## Use Cases
+
+- HIV viral load monitoring during treatment
+- Disease progression analysis
+- Treatment efficacy assessment
+- Viral rebound detection
