@@ -1,13 +1,13 @@
 #' @title SegmentWrapper
 #' @description A wrapper function that combines interpolation, segmentation, and classification of viral load time series data.
 #' @param data A data frame containing 'date' and 'result' columns representing the time series data.
-#'  @param n_points Number of points for interpolation (default is 100).
-#'  @param method Interpolation method, either "linear" or "spline" (default is "spline").
-#'  @param density_threshold Density threshold for segmentation (default is 0.05).
-#'  @param min_basin_size Minimum number of consecutive points to qualify as a basin (default is 2).
-#'  @param variance_threshold Variance threshold for bridge classification (default is 0.3).
-#'  @return A list containing the classified segmentation results and summary statistics.
-#'  @export
+#' @param n_points Number of points for interpolation (default is 100).
+#' @param method Interpolation method, either "linear" or "spline" (default is "spline").
+#' @param density_threshold Density threshold for segmentation (default is 0.05).
+#' @param min_basin_size Minimum number of consecutive points to qualify as a basin (default is 2).
+#' @param variance_threshold Variance threshold for bridge classification (default is 0.3).
+#' @return A list containing the classified segmentation results and summary statistics.
+#' @export
 
 SegmentWrapper <- function(data,
                            n_points = 100,
