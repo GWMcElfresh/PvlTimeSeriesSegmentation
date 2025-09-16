@@ -9,6 +9,13 @@
 # User-specific files
 .Ruserdata
 
+# Test plots (keep example plots)
+test_plot_*.png
+
+# R package build artifacts
+*.tar.gz
+*.Rcheck/
+
 # Example code in package build process
 *-Ex.R
 
